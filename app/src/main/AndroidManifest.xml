@@ -16,6 +16,12 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
+        <activity android:name=".BTActivity"
+            android:parentActivityName = ".MainActivity"/>
+        <activity android:name=".CPRActivity"
+            android:parentActivityName = ".MainActivity"/>
+
     </application>
 
 </manifest>
