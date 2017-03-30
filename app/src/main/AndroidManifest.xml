@@ -17,7 +17,7 @@
             </intent-filter>
         </activity>
 
-        <activity android:name=".BTActivity"
+        <activity android:name=".SettingActivity"
             android:parentActivityName = ".MainActivity"/>
         <activity android:name=".CPRActivity"
             android:parentActivityName = ".MainActivity"/>

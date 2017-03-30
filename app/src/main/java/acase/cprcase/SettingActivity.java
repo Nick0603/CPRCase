@@ -8,7 +8,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 
 
-public class BTActivity  extends AppCompatActivity {
+public class SettingActivity extends AppCompatActivity {
 
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -20,7 +20,7 @@ public class BTActivity  extends AppCompatActivity {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         ActionBar actionBar = getSupportActionBar();
-        actionBar.setTitle("BlueTooth");
+        actionBar.setTitle("Setting");
         actionBar.setDisplayHomeAsUpEnabled(true);
     }
 }

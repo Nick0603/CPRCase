@@ -8,9 +8,10 @@ import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageButton;
+import android.widget.Toast;
 
 public class MainActivity extends AppCompatActivity {
-    private ImageButton Btn_pageCPR,Btn_pageBlueTooth;
+    private ImageButton Btn_pageCPR,Btn_pageBlueTooth,Btn_pageAutoConnect;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -18,12 +19,14 @@ public class MainActivity extends AppCompatActivity {
 
         Btn_pageCPR = (ImageButton) findViewById(R.id.Btn_pageCPR);
         Btn_pageBlueTooth = (ImageButton) findViewById(R.id.Btn_pageBlueTooth);
+        Btn_pageAutoConnect = (ImageButton) findViewById(R.id.Btn_pageAutoConnect);
+
         setToolBar();
 
         Btn_pageBlueTooth.setOnClickListener(new Button.OnClickListener(){
             @Override
             public void onClick(View v) {
-                startActivity(new Intent(MainActivity.this,BTActivity.class));
+                startActivity(new Intent(MainActivity.this,SettingActivity.class));
             }
         });
 
@@ -31,6 +34,13 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 startActivity(new Intent(MainActivity.this,CPRActivity.class));
+            }
+        });
+
+        Btn_pageAutoConnect.setOnClickListener(new Button.OnClickListener(){
+            @Override
+            public void onClick(View v) {
+                Toast.makeText(v.getContext(), "目前還沒有自動連線功能", Toast.LENGTH_LONG).show();
             }
         });
     }
