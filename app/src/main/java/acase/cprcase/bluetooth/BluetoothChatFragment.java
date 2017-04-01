@@ -58,7 +58,7 @@ public class BluetoothChatFragment extends Fragment {
     // Layout Views
     private EditText mOutEditText;
     private Button mSendButton,Btn_connectBT;
-    private TextView TV_receiveMsg,TV_reciveTime;
+    private TextView TV_connectStatus,TV_deviceName,TV_receiveMsg,TV_reciveTime;
     /**
      * Name of the connected device
      */
@@ -150,6 +150,8 @@ public class BluetoothChatFragment extends Fragment {
         Btn_connectBT = (Button) view.findViewById(R.id.Btn_connectBT);
         TV_receiveMsg = (TextView) view.findViewById(R.id.TV_receiveMsg);
         TV_reciveTime = (TextView) view.findViewById(R.id.TV_receiveTime);
+        TV_connectStatus = (TextView) view.findViewById(R.id.TV_connectStatus);
+        TV_deviceName = (TextView) view.findViewById(R.id.TV_deviceName);
     }
 
     /**
@@ -241,41 +243,6 @@ public class BluetoothChatFragment extends Fragment {
             return true;
         }
     };
-
-    /**
-     * Updates the status on the action bar.
-     *
-     * @param resId a string resource ID
-     */
-    private void setStatus(int resId) {
-        FragmentActivity activity = getActivity();
-        if (null == activity) {
-            return;
-        }
-        final ActionBar actionBar = activity.getActionBar();
-        if (null == actionBar) {
-            return;
-        }
-        actionBar.setSubtitle(resId);
-    }
-
-    /**
-     * Updates the status on the action bar.
-     *
-     * @param subTitle status
-     */
-    private void setStatus(CharSequence subTitle) {
-        FragmentActivity activity = getActivity();
-        if (null == activity) {
-            return;
-        }
-        final ActionBar actionBar = activity.getActionBar();
-        if (null == actionBar) {
-            return;
-        }
-        actionBar.setSubtitle(subTitle);
-    }
-
     /**
      * The Handler that gets information back from the BluetoothChatService
      */
@@ -287,14 +254,16 @@ public class BluetoothChatFragment extends Fragment {
                 case Constants.MESSAGE_STATE_CHANGE:
                     switch (msg.arg1) {
                         case BluetoothChatService.STATE_CONNECTED:
-                            setStatus(getString(R.string.title_connected_to, mConnectedDeviceName));
+                            TV_connectStatus.setText("已連線");
+                            TV_deviceName.setText(mConnectedDeviceName);
                             break;
                         case BluetoothChatService.STATE_CONNECTING:
-                            setStatus(R.string.title_connecting);
+                            TV_connectStatus.setText(R.string.title_connecting);
                             break;
                         case BluetoothChatService.STATE_LISTEN:
                         case BluetoothChatService.STATE_NONE:
-                            setStatus(R.string.title_not_connected);
+                            TV_connectStatus.setText("未連線");
+                            TV_deviceName.setText("");
                             break;
                     }
                     break;
