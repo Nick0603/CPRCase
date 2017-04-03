@@ -260,7 +260,7 @@ public class MainActivity extends AppCompatActivity {
                     MainActivity.mConnectedDeviceName = msg.getData().getString(Constants.DEVICE_NAME);
                     break;
 
-                case Constants.MESSAGE_TOAST:
+                case Constants.MESSAGE_CONNLOST:
                     MainActivity.myMediaPlaye.start();
                     MainActivity.myMediaPlaye.setLooping(true);
                     MainActivity.isAlertDialog = true;

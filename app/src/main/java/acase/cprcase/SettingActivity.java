@@ -131,9 +131,8 @@ public class SettingActivity extends AppCompatActivity {
             case REQUEST_ENABLE_BT:
                 // User did not enable Bluetooth or an error occurred
                 Log.d(TAG, "BT not enabled");
-                Toast.makeText(SettingActivity.this, R.string.bt_not_enabled_leaving,
+                Toast.makeText(SettingActivity.this, R.string.bt_not_enabled,
                         Toast.LENGTH_SHORT).show();
-                SettingActivity.this.finish();
         }
     }
 
@@ -306,7 +305,7 @@ public class SettingActivity extends AppCompatActivity {
                     // save the connected device's name
                     MainActivity.mConnectedDeviceName = msg.getData().getString(Constants.DEVICE_NAME);
                     break;
-                case Constants.MESSAGE_TOAST:
+                case Constants.MESSAGE_CONNLOST:
                     MainActivity.myMediaPlaye.start();
                     MainActivity.myMediaPlaye.setLooping(true);
                     MainActivity.isAlertDialog = true;
@@ -340,6 +339,10 @@ public class SettingActivity extends AppCompatActivity {
                                 }
                             })
                             .show();
+                case Constants.MESSAGE_TOAST:
+                    String strToast = msg.getData().getString(Constants.TOAST);
+                    Toast.makeText(SettingActivity.this,strToast, Toast.LENGTH_SHORT).show();
+                    break;
             }
         }
     };

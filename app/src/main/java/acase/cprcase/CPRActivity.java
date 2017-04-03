@@ -113,7 +113,7 @@ public class CPRActivity  extends AppCompatActivity {
                     }
 
                     break;
-                case Constants.MESSAGE_TOAST:
+                case Constants.MESSAGE_CONNLOST:
                     MainActivity.myMediaPlaye.start();
                     MainActivity.myMediaPlaye.setLooping(true);
                     MainActivity.isAlertDialog = true;
@@ -146,6 +146,10 @@ public class CPRActivity  extends AppCompatActivity {
                                 }
                             })
                             .show();
+                case Constants.MESSAGE_TOAST:
+                    String strToast = msg.getData().getString(Constants.TOAST);
+                    Toast.makeText(CPRActivity.this,strToast, Toast.LENGTH_SHORT).show();
+                    break;
             }
         }
     };
