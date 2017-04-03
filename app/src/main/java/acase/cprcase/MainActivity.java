@@ -17,7 +17,6 @@ import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
-import android.widget.ImageButton;
 import android.widget.Toast;
 
 import java.text.SimpleDateFormat;
@@ -29,7 +28,7 @@ import acase.cprcase.bluetooth.DeviceListActivity;
 
 public class MainActivity extends AppCompatActivity {
     private static final String TAG = "MainActivity";
-    private ImageButton Btn_pageCPR,Btn_pageBlueTooth,Btn_pageAutoConnect;
+    private Button Btn_pageCPR,Btn_pageBlueTooth,Btn_pageAutoConnect;
 
     /*Name of the connected device*/
     public static String mConnectedStatus = "未連線";
@@ -64,6 +63,9 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        spref = getPreferences(MODE_PRIVATE);
+        editor = spref.edit();
+        myMediaPlaye = MediaPlayer.create(this, R.raw.alert);
 
         MainActivity.mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
         if (MainActivity.mBluetoothAdapter == null) {
@@ -71,20 +73,15 @@ public class MainActivity extends AppCompatActivity {
             Toast.makeText(activity, "Bluetooth is not available", Toast.LENGTH_LONG).show();
             activity.finish();
         }
-
-        spref = getPreferences(MODE_PRIVATE);
-        editor = spref.edit();
-
-        myMediaPlaye = MediaPlayer.create(this, R.raw.alert);
-        Btn_pageCPR = (ImageButton) findViewById(R.id.Btn_pageCPR);
-        Btn_pageBlueTooth = (ImageButton) findViewById(R.id.Btn_pageBlueTooth);
-        Btn_pageAutoConnect = (ImageButton) findViewById(R.id.Btn_pageAutoConnect);
-
-        setToolBar();
-
         if(mBlueToothService != null){
             MainActivity.mBlueToothService.mHandler = mHandler;
         }
+
+        Btn_pageCPR = (Button) findViewById(R.id.Btn_pageCPR);
+        Btn_pageBlueTooth = (Button) findViewById(R.id.Btn_pageBlueTooth);
+        Btn_pageAutoConnect = (Button) findViewById(R.id.Btn_pageAutoConnect);
+        setToolBar();
+
         Btn_pageBlueTooth.setOnClickListener(new Button.OnClickListener(){
             @Override
             public void onClick(View v) {

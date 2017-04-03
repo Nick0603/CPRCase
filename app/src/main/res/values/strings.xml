@@ -23,5 +23,6 @@
     <string name="alertBTDisConnTitle">藍芽斷線</string>
     <string name="alertBTDisConnContent">現在已跟arduino中斷連線</string>
 
+    <string name="autoConnUnable">藍芽裝置正連線中或已經連線</string>
     <string name="lastBTNoStored">尚未儲存任何藍芽資料</string>
 </resources>
