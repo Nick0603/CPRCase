@@ -28,7 +28,7 @@ import acase.cprcase.bluetooth.DeviceListActivity;
 
 public class MainActivity extends AppCompatActivity {
     private static final String TAG = "MainActivity";
-    private Button Btn_pageCPR,Btn_pageBlueTooth,Btn_pageAutoConnect;
+    private Button Btn_pageCPR,Btn_pageBlueTooth,Btn_AutoConnect;
 
     /*Name of the connected device*/
     public static String mConnectedStatus = "未連線";
@@ -79,40 +79,8 @@ public class MainActivity extends AppCompatActivity {
 
         Btn_pageCPR = (Button) findViewById(R.id.Btn_pageCPR);
         Btn_pageBlueTooth = (Button) findViewById(R.id.Btn_pageBlueTooth);
-        Btn_pageAutoConnect = (Button) findViewById(R.id.Btn_pageAutoConnect);
+        Btn_AutoConnect = (Button) findViewById(R.id.Btn_AutoConnect);
         setToolBar();
-
-        Btn_pageBlueTooth.setOnClickListener(new Button.OnClickListener(){
-            @Override
-            public void onClick(View v) {
-                startActivity(new Intent(MainActivity.this,SettingActivity.class));
-            }
-        });
-
-        Btn_pageCPR.setOnClickListener(new Button.OnClickListener(){
-            @Override
-            public void onClick(View v) {
-                startActivity(new Intent(MainActivity.this,CPRActivity.class));
-            }
-        });
-
-        Btn_pageAutoConnect.setOnClickListener(new Button.OnClickListener(){
-            @Override
-            public void onClick(View v) {
-
-                Boolean lastBTSecure = MainActivity.spref.getBoolean(MainActivity.SharePreSecure, false);
-                String lastBTAddress = MainActivity.spref.getString(MainActivity.SharePreAddress, null);
-
-                if(lastBTAddress != null) {
-                    // Get the BluetoothDevice object
-                    BluetoothDevice device = MainActivity.mBluetoothAdapter.getRemoteDevice(lastBTAddress);
-                    // Attempt to connect to the device
-                    MainActivity.mBlueToothService.connect(device, lastBTSecure);
-                }else{
-                    Toast.makeText(MainActivity.this, R.string.lastBTNoStored, Toast.LENGTH_SHORT).show();
-                }
-            }
-        });
     }
 
     @Override
@@ -145,6 +113,42 @@ public class MainActivity extends AppCompatActivity {
         }else{
             MainActivity.mBlueToothService.mHandler = mHandler;
         }
+
+        Btn_pageBlueTooth.setOnClickListener(new Button.OnClickListener(){
+            @Override
+            public void onClick(View v) {
+                startActivity(new Intent(MainActivity.this,SettingActivity.class));
+            }
+        });
+
+        Btn_pageCPR.setOnClickListener(new Button.OnClickListener(){
+            @Override
+            public void onClick(View v) {
+                startActivity(new Intent(MainActivity.this,CPRActivity.class));
+            }
+        });
+
+        Btn_AutoConnect.setOnClickListener(new Button.OnClickListener(){
+            @Override
+            public void onClick(View v) {
+                if (mBlueToothService.getState() == BluetoothService.STATE_NONE ||
+                        mBlueToothService.getState() == BluetoothService.STATE_LISTEN) {
+                    Boolean lastBTSecure = MainActivity.spref.getBoolean(MainActivity.SharePreSecure, false);
+                    String lastBTAddress = MainActivity.spref.getString(MainActivity.SharePreAddress, null);
+
+                    if (lastBTAddress != null) {
+                        // Get the BluetoothDevice object
+                        BluetoothDevice device = MainActivity.mBluetoothAdapter.getRemoteDevice(lastBTAddress);
+                        // Attempt to connect to the device
+                        MainActivity.mBlueToothService.connect(device, lastBTSecure);
+                    } else {
+                        Toast.makeText(MainActivity.this, R.string.lastBTNoStored, Toast.LENGTH_SHORT).show();
+                    }
+                }else{
+                    Toast.makeText(MainActivity.this,R.string.autoConnUnable, Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
     }
 
     private void setupBluetooth() {
