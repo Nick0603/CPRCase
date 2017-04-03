@@ -167,8 +167,13 @@ public class SettingActivity extends AppCompatActivity {
         TV_reciveTime = (TextView) findViewById(R.id.TV_receiveTime);
         TV_connectStatus = (TextView) findViewById(R.id.TV_connectStatus);
         TV_deviceName = (TextView) findViewById(R.id.TV_deviceName);
-        TV_connectStatus.setText(MainActivity.mConnectedStatus);
-        TV_deviceName.setText( MainActivity.mConnectedDeviceName);
+        if(MainActivity.mBlueToothService.getState() == BluetoothService.STATE_CONNECTED){
+            TV_connectStatus.setText("已連線");
+            TV_deviceName.setText( MainActivity.mConnectedDeviceName);
+        }else{
+            TV_connectStatus.setText("未連線");
+            TV_deviceName.setText( "");
+        }
 
         // Initialize the compose field with a listener for the return key
         mOutEditText.setOnEditorActionListener(mWriteListener);
@@ -200,8 +205,7 @@ public class SettingActivity extends AppCompatActivity {
                 case Constants.MESSAGE_STATE_CHANGE:
                     switch (msg.arg1) {
                         case BluetoothService.STATE_CONNECTED:
-                            MainActivity.mConnectedStatus = "已連線";
-                            TV_connectStatus.setText(MainActivity.mConnectedStatus);
+                            TV_connectStatus.setText(R.string.title_connected);
                             TV_deviceName.setText(MainActivity.mConnectedDeviceName);
                             break;
                         case BluetoothService.STATE_CONNECTING:
@@ -209,10 +213,8 @@ public class SettingActivity extends AppCompatActivity {
                             break;
                         case BluetoothService.STATE_LISTEN:
                         case BluetoothService.STATE_NONE:
-                            MainActivity.mConnectedStatus = "未連線";
-                            MainActivity.mConnectedDeviceName = "";
-                            TV_connectStatus.setText(MainActivity.mConnectedStatus);
-                            TV_deviceName.setText( MainActivity.mConnectedDeviceName);
+                            TV_connectStatus.setText(R.string.title_disConnected);
+                            TV_deviceName.setText("");
                             break;
                     }
                     break;
@@ -243,7 +245,7 @@ public class SettingActivity extends AppCompatActivity {
                         new AlertDialog.Builder(SettingActivity.this)
                                 .setTitle(R.string.alertATitle)
                                 .setMessage(R.string.alertAContent)
-                                .setPositiveButton("前往急救教學", new DialogInterface.OnClickListener() {
+                                .setPositiveButton(R.string.alertAPositiveBtn, new DialogInterface.OnClickListener() {
                                     @Override
                                     public void onClick(DialogInterface dialog, int which) {
                                         MainActivity.isAlertDialog = false;
@@ -253,7 +255,7 @@ public class SettingActivity extends AppCompatActivity {
                                         MainActivity.myMediaPlaye.setLooping(false);
                                     }
                                 })
-                                .setNegativeButton("取消", new DialogInterface.OnClickListener() {
+                                .setNegativeButton(R.string.alertANegativeBtn, new DialogInterface.OnClickListener() {
                                     @Override
                                     public void onClick(DialogInterface dialog, int which) {
                                         MainActivity.isAlertDialog = false;
@@ -277,7 +279,7 @@ public class SettingActivity extends AppCompatActivity {
                         new AlertDialog.Builder(SettingActivity.this)
                                 .setTitle(R.string.alertBTitle)
                                 .setMessage(R.string.alertBContent)
-                                .setPositiveButton("確認", new DialogInterface.OnClickListener() {
+                                .setPositiveButton(R.string.alertBPositiveBtn, new DialogInterface.OnClickListener() {
                                     @Override
                                     public void onClick(DialogInterface dialog, int which) {
                                         MainActivity.isAlertDialog = false;
@@ -312,7 +314,7 @@ public class SettingActivity extends AppCompatActivity {
                     new AlertDialog.Builder(SettingActivity.this)
                             .setTitle(R.string.alertBTDisConnTitle)
                             .setMessage(R.string.alertBTDisConnContent)
-                            .setPositiveButton("前往設定頁面", new DialogInterface.OnClickListener() {
+                            .setPositiveButton(R.string.alertBTPositiveBtn, new DialogInterface.OnClickListener() {
                                 @Override
                                 public void onClick(DialogInterface dialog, int which) {
                                     MainActivity.isAlertDialog = false;
@@ -322,7 +324,7 @@ public class SettingActivity extends AppCompatActivity {
                                     MainActivity.myMediaPlaye.setLooping(false);
                                 }
                             })
-                            .setNegativeButton("取消", new DialogInterface.OnClickListener() {
+                            .setNegativeButton(R.string.alertBTNegativeBtn, new DialogInterface.OnClickListener() {
                                 @Override
                                 public void onClick(DialogInterface dialog, int which) {
                                     MainActivity.isAlertDialog = false;
@@ -350,7 +352,7 @@ public class SettingActivity extends AppCompatActivity {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         ActionBar actionBar = getSupportActionBar();
-        actionBar.setTitle("Setting");
+        actionBar.setTitle(R.string.SettingPage);
         actionBar.setDisplayHomeAsUpEnabled(true);
     }
 }

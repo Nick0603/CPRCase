@@ -31,8 +31,6 @@ public class MainActivity extends AppCompatActivity {
     private Button Btn_pageCPR,Btn_pageBlueTooth,Btn_AutoConnect;
 
     /*Name of the connected device*/
-    public static String mConnectedStatus = "未連線";
-    /*Name of the connected device*/
     public static String mConnectedDeviceName = "";
 
     /*Array adapter for the conversation thread*/
@@ -169,7 +167,7 @@ public class MainActivity extends AppCompatActivity {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         ActionBar actionBar = getSupportActionBar();
-        actionBar.setTitle("Home");
+        actionBar.setTitle(R.string.homePage);
     }
 
 
@@ -180,11 +178,9 @@ public class MainActivity extends AppCompatActivity {
                 case Constants.MESSAGE_STATE_CHANGE:
                     switch (msg.arg1) {
                         case BluetoothService.STATE_CONNECTED:
-                            MainActivity.mConnectedStatus = "已連線";
                             Toast.makeText(MainActivity.this, "已連接到" + MainActivity.mConnectedDeviceName, Toast.LENGTH_SHORT).show();
                             break;
                         case BluetoothService.STATE_NONE:
-                            MainActivity.mConnectedStatus = "未連線";
                             MainActivity.mConnectedDeviceName = "";
                             break;
                     }
@@ -202,7 +198,7 @@ public class MainActivity extends AppCompatActivity {
                         new android.app.AlertDialog.Builder(MainActivity.this)
                                 .setTitle(R.string.alertATitle)
                                 .setMessage(R.string.alertAContent)
-                                .setPositiveButton("前往急救教學", new DialogInterface.OnClickListener() {
+                                .setPositiveButton(R.string.alertAPositiveBtn, new DialogInterface.OnClickListener() {
                                     @Override
                                     public void onClick(DialogInterface dialog, int which) {
                                         MainActivity.isAlertDialog = false;
@@ -211,7 +207,7 @@ public class MainActivity extends AppCompatActivity {
                                         MainActivity.myMediaPlaye.setLooping(false);
                                     }
                                 })
-                                .setNegativeButton("取消", new DialogInterface.OnClickListener() {
+                                .setNegativeButton(R.string.alertANegativeBtn, new DialogInterface.OnClickListener() {
                                     @Override
                                     public void onClick(DialogInterface dialog, int which) {
                                         MainActivity.isAlertDialog = false;
@@ -235,7 +231,7 @@ public class MainActivity extends AppCompatActivity {
                         new android.app.AlertDialog.Builder(MainActivity.this)
                                 .setTitle(R.string.alertBTitle)
                                 .setMessage(R.string.alertBContent)
-                                .setPositiveButton("確認", new DialogInterface.OnClickListener() {
+                                .setPositiveButton(R.string.alertBPositiveBtn, new DialogInterface.OnClickListener() {
                                     @Override
                                     public void onClick(DialogInterface dialog, int which) {
                                         MainActivity.isAlertDialog = false;
@@ -268,7 +264,7 @@ public class MainActivity extends AppCompatActivity {
                     new android.app.AlertDialog.Builder(MainActivity.this)
                             .setTitle(R.string.alertBTDisConnTitle)
                             .setMessage(R.string.alertBTDisConnContent)
-                            .setPositiveButton("前往設定頁面", new DialogInterface.OnClickListener() {
+                            .setPositiveButton(R.string.alertBTPositiveBtn, new DialogInterface.OnClickListener() {
                                 @Override
                                 public void onClick(DialogInterface dialog, int which) {
                                     MainActivity.isAlertDialog = false;
@@ -277,7 +273,7 @@ public class MainActivity extends AppCompatActivity {
                                     MainActivity.myMediaPlaye.setLooping(false);
                                 }
                             })
-                            .setNegativeButton("取消", new DialogInterface.OnClickListener() {
+                            .setNegativeButton(R.string.alertBTNegativeBtn, new DialogInterface.OnClickListener() {
                                 @Override
                                 public void onClick(DialogInterface dialog, int which) {
                                     MainActivity.isAlertDialog = false;
@@ -294,6 +290,10 @@ public class MainActivity extends AppCompatActivity {
                                 }
                             })
                             .show();
+                case Constants.MESSAGE_TOAST:
+                    String strToast = msg.getData().getString(Constants.TOAST);
+                    Toast.makeText(MainActivity.this,strToast, Toast.LENGTH_SHORT).show();
+                    break;
             }
         }
     };

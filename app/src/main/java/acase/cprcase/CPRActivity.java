@@ -31,7 +31,7 @@ public class CPRActivity  extends AppCompatActivity {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         ActionBar actionBar = getSupportActionBar();
-        actionBar.setTitle("CPR");
+        actionBar.setTitle(R.string.CPRPage);
         actionBar.setDisplayHomeAsUpEnabled(true);
     }
 
@@ -39,14 +39,6 @@ public class CPRActivity  extends AppCompatActivity {
         @Override
         public void handleMessage(Message msg) {
             switch (msg.what) {
-                case Constants.MESSAGE_STATE_CHANGE:
-                    switch (msg.arg1) {
-                        case BluetoothService.STATE_NONE:
-                            MainActivity.mConnectedStatus = "未連線";
-                            MainActivity.mConnectedDeviceName = "";
-                            break;
-                    }
-                    break;
                 case Constants.MESSAGE_READ:
                     byte[] readBuf = (byte[]) msg.obj;
                     // construct a string from the valid bytes in the buffer
@@ -59,7 +51,7 @@ public class CPRActivity  extends AppCompatActivity {
                         new android.app.AlertDialog.Builder(CPRActivity.this)
                                 .setTitle(R.string.alertATitle)
                                 .setMessage(R.string.alertAContent)
-                                .setPositiveButton("前往急救教學", new DialogInterface.OnClickListener() {
+                                .setPositiveButton(R.string.alertAPositiveBtn, new DialogInterface.OnClickListener() {
                                     @Override
                                     public void onClick(DialogInterface dialog, int which) {
                                         MainActivity.isAlertDialog = false;
@@ -68,7 +60,7 @@ public class CPRActivity  extends AppCompatActivity {
                                         MainActivity.myMediaPlaye.setLooping(false);
                                     }
                                 })
-                                .setNegativeButton("取消", new DialogInterface.OnClickListener() {
+                                .setNegativeButton(R.string.alertANegativeBtn, new DialogInterface.OnClickListener() {
                                     @Override
                                     public void onClick(DialogInterface dialog, int which) {
                                         MainActivity.isAlertDialog = false;
@@ -92,7 +84,7 @@ public class CPRActivity  extends AppCompatActivity {
                         new android.app.AlertDialog.Builder(CPRActivity.this)
                                 .setTitle(R.string.alertBTitle)
                                 .setMessage(R.string.alertBContent)
-                                .setPositiveButton("確認", new DialogInterface.OnClickListener() {
+                                .setPositiveButton(R.string.alertBPositiveBtn, new DialogInterface.OnClickListener() {
                                     @Override
                                     public void onClick(DialogInterface dialog, int which) {
                                         MainActivity.isAlertDialog = false;
@@ -120,7 +112,7 @@ public class CPRActivity  extends AppCompatActivity {
                     new android.app.AlertDialog.Builder(CPRActivity.this)
                             .setTitle(R.string.alertBTDisConnTitle)
                             .setMessage(R.string.alertBTDisConnContent)
-                            .setPositiveButton("前往設定頁面", new DialogInterface.OnClickListener() {
+                            .setPositiveButton(R.string.alertBTPositiveBtn, new DialogInterface.OnClickListener() {
                                 @Override
                                 public void onClick(DialogInterface dialog, int which) {
                                     MainActivity.isAlertDialog = false;
@@ -129,7 +121,7 @@ public class CPRActivity  extends AppCompatActivity {
                                     MainActivity.myMediaPlaye.setLooping(false);
                                 }
                             })
-                            .setNegativeButton("取消", new DialogInterface.OnClickListener() {
+                            .setNegativeButton(R.string.alertANegativeBtn, new DialogInterface.OnClickListener() {
                                 @Override
                                 public void onClick(DialogInterface dialog, int which) {
                                     MainActivity.isAlertDialog = false;

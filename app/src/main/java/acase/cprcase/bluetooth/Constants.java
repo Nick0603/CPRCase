@@ -16,9 +16,6 @@
 
 package acase.cprcase.bluetooth;
 
-/**
- * Defines several constants used between {@link BluetoothChatService} and the UI.
- */
 public interface Constants {
 
     // Message types sent from the BluetoothChatService Handler
@@ -30,7 +27,6 @@ public interface Constants {
     public static final int MESSAGE_CONNLOST = 6;
 
     // Key names received from the BluetoothChatService Handler
-    public static final String DEVICE_NAME = "device_name";
-    public static final String TOAST = "toast";
-
+    public static String DEVICE_NAME = "device_name";
+    public static String TOAST = "toast";
 }
