@@ -293,6 +293,8 @@ public class SettingActivity extends AppCompatActivity {
                     TV_reciveTime.setText(formattedDate);
 
                     if(readMessage.equals("a") && MainActivity.isAlertDialog == false){
+                        MainActivity.myMediaPlaye.start();
+                        MainActivity.myMediaPlaye.setLooping(true);
                         MainActivity.isAlertDialog = true;
                         new AlertDialog.Builder(SettingActivity.this)
                                 .setTitle(R.string.alertATitle)
@@ -303,6 +305,8 @@ public class SettingActivity extends AppCompatActivity {
                                         MainActivity.isAlertDialog = false;
                                         SettingActivity.this.finish();
                                         startActivity(new Intent(getApplicationContext(),CPRActivity.class));
+                                        MainActivity.myMediaPlaye.pause();
+                                        MainActivity.myMediaPlaye.setLooping(false);
                                     }
                                 })
                                 .setNegativeButton("取消", new DialogInterface.OnClickListener() {
@@ -310,16 +314,22 @@ public class SettingActivity extends AppCompatActivity {
                                     public void onClick(DialogInterface dialog, int which) {
                                         Toast.makeText(getApplicationContext(), "你選擇了取消", Toast.LENGTH_SHORT).show();
                                         MainActivity.isAlertDialog = false;
+                                        MainActivity.myMediaPlaye.pause();
+                                        MainActivity.myMediaPlaye.setLooping(false);
                                     }
                                 })
                                 .setOnCancelListener(new DialogInterface.OnCancelListener(){
                                     @Override
                                     public void onCancel(DialogInterface dialog) {
                                         MainActivity.isAlertDialog = false;
+                                        MainActivity.myMediaPlaye.pause();
+                                        MainActivity.myMediaPlaye.setLooping(false);
                                     }
                                 })
                                 .show();
                     }else if(readMessage.equals("b") && MainActivity.isAlertDialog == false){
+                        MainActivity.myMediaPlaye.start();
+                        MainActivity.myMediaPlaye.setLooping(true);
                         MainActivity.isAlertDialog = true;
                         new AlertDialog.Builder(SettingActivity.this)
                                 .setTitle(R.string.alertBTitle)
@@ -329,6 +339,8 @@ public class SettingActivity extends AppCompatActivity {
                                     public void onClick(DialogInterface dialog, int which) {
                                         Toast.makeText(getApplicationContext(), "你選擇了取消", Toast.LENGTH_SHORT).show();
                                         MainActivity.isAlertDialog = false;
+                                        MainActivity.myMediaPlaye.pause();
+                                        MainActivity.myMediaPlaye.setLooping(false);
                                     }
                                 })
 
@@ -336,6 +348,8 @@ public class SettingActivity extends AppCompatActivity {
                                     @Override
                                     public void onCancel(DialogInterface dialog) {
                                         MainActivity.isAlertDialog = false;
+                                        MainActivity.myMediaPlaye.pause();
+                                        MainActivity.myMediaPlaye.setLooping(false);
                                     }
                                 })
                                 .show();
@@ -350,6 +364,9 @@ public class SettingActivity extends AppCompatActivity {
                     MainActivity.mConnectedDeviceName = msg.getData().getString(Constants.DEVICE_NAME);
                     break;
                 case Constants.MESSAGE_TOAST:
+                    MainActivity.myMediaPlaye.start();
+                    MainActivity.myMediaPlaye.setLooping(true);
+                    MainActivity.isAlertDialog = true;
                     new AlertDialog.Builder(SettingActivity.this)
                             .setTitle(R.string.alertBTDisConnTitle)
                             .setMessage(R.string.alertBTDisConnContent)
@@ -359,6 +376,8 @@ public class SettingActivity extends AppCompatActivity {
                                     MainActivity.isAlertDialog = false;
                                     SettingActivity.this.finish();
                                     startActivity(new Intent(getApplicationContext(),SettingActivity.class));
+                                    MainActivity.myMediaPlaye.pause();
+                                    MainActivity.myMediaPlaye.setLooping(false);
                                 }
                             })
                             .setNegativeButton("取消", new DialogInterface.OnClickListener() {
@@ -366,12 +385,16 @@ public class SettingActivity extends AppCompatActivity {
                                 public void onClick(DialogInterface dialog, int which) {
                                     Toast.makeText(getApplicationContext(), "你選擇了取消", Toast.LENGTH_SHORT).show();
                                     MainActivity.isAlertDialog = false;
+                                    MainActivity.myMediaPlaye.pause();
+                                    MainActivity.myMediaPlaye.setLooping(false);
                                 }
                             })
                             .setOnCancelListener(new DialogInterface.OnCancelListener(){
                                 @Override
                                 public void onCancel(DialogInterface dialog) {
                                     MainActivity.isAlertDialog = false;
+                                    MainActivity.myMediaPlaye.pause();
+                                    MainActivity.myMediaPlaye.setLooping(false);
                                 }
                             })
                             .show();

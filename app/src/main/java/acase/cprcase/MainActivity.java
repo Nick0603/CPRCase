@@ -3,6 +3,7 @@ package acase.cprcase;
 import android.bluetooth.BluetoothAdapter;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.media.MediaPlayer;
 import android.os.Handler;
 import android.os.Message;
 import android.support.v7.app.ActionBar;
@@ -41,11 +42,14 @@ public class MainActivity extends AppCompatActivity {
     public static BluetoothService mBlueToothService = null;
 
     public static boolean isAlertDialog  = false;
+    public static MediaPlayer myMediaPlaye;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        myMediaPlaye = MediaPlayer.create(this, R.raw.alert);
         Btn_pageCPR = (ImageButton) findViewById(R.id.Btn_pageCPR);
         Btn_pageBlueTooth = (ImageButton) findViewById(R.id.Btn_pageBlueTooth);
         Btn_pageAutoConnect = (ImageButton) findViewById(R.id.Btn_pageAutoConnect);
@@ -95,6 +99,8 @@ public class MainActivity extends AppCompatActivity {
                     String readMessage = new String(readBuf, 0 , msg.arg1);
 
                     if(readMessage.equals("a") && MainActivity.isAlertDialog == false){
+                        MainActivity.myMediaPlaye.start();
+                        MainActivity.myMediaPlaye.setLooping(true);
                         MainActivity.isAlertDialog = true;
                         new android.app.AlertDialog.Builder(MainActivity.this)
                                 .setTitle(R.string.alertATitle)
@@ -104,6 +110,8 @@ public class MainActivity extends AppCompatActivity {
                                     public void onClick(DialogInterface dialog, int which) {
                                         MainActivity.isAlertDialog = false;
                                         startActivity(new Intent(getApplicationContext(),CPRActivity.class));
+                                        MainActivity.myMediaPlaye.pause();
+                                        MainActivity.myMediaPlaye.setLooping(false);
                                     }
                                 })
                                 .setNegativeButton("取消", new DialogInterface.OnClickListener() {
@@ -111,16 +119,22 @@ public class MainActivity extends AppCompatActivity {
                                     public void onClick(DialogInterface dialog, int which) {
                                         Toast.makeText(getApplicationContext(), "你選擇了取消", Toast.LENGTH_SHORT).show();
                                         MainActivity.isAlertDialog = false;
+                                        MainActivity.myMediaPlaye.pause();
+                                        MainActivity.myMediaPlaye.setLooping(false);
                                     }
                                 })
                                 .setOnCancelListener(new DialogInterface.OnCancelListener(){
                                     @Override
                                     public void onCancel(DialogInterface dialog) {
                                         MainActivity.isAlertDialog = false;
+                                        MainActivity.myMediaPlaye.pause();
+                                        MainActivity.myMediaPlaye.setLooping(false);
                                     }
                                 })
                                 .show();
                     }else if(readMessage.equals("b") && MainActivity.isAlertDialog == false){
+                        MainActivity.myMediaPlaye.start();
+                        MainActivity.myMediaPlaye.setLooping(true);
                         MainActivity.isAlertDialog = true;
                         new android.app.AlertDialog.Builder(MainActivity.this)
                                 .setTitle(R.string.alertBTitle)
@@ -130,6 +144,8 @@ public class MainActivity extends AppCompatActivity {
                                     public void onClick(DialogInterface dialog, int which) {
                                         Toast.makeText(getApplicationContext(), "你選擇了取消", Toast.LENGTH_SHORT).show();
                                         MainActivity.isAlertDialog = false;
+                                        MainActivity.myMediaPlaye.pause();
+                                        MainActivity.myMediaPlaye.setLooping(false);
                                     }
                                 })
 
@@ -137,6 +153,8 @@ public class MainActivity extends AppCompatActivity {
                                     @Override
                                     public void onCancel(DialogInterface dialog) {
                                         MainActivity.isAlertDialog = false;
+                                        MainActivity.myMediaPlaye.pause();
+                                        MainActivity.myMediaPlaye.setLooping(false);
                                     }
                                 })
                                 .show();
@@ -144,6 +162,9 @@ public class MainActivity extends AppCompatActivity {
 
                     break;
                 case Constants.MESSAGE_TOAST:
+                    MainActivity.myMediaPlaye.start();
+                    MainActivity.myMediaPlaye.setLooping(true);
+                    MainActivity.isAlertDialog = true;
                     new android.app.AlertDialog.Builder(MainActivity.this)
                             .setTitle(R.string.alertBTDisConnTitle)
                             .setMessage(R.string.alertBTDisConnContent)
@@ -152,6 +173,8 @@ public class MainActivity extends AppCompatActivity {
                                 public void onClick(DialogInterface dialog, int which) {
                                     MainActivity.isAlertDialog = false;
                                     startActivity(new Intent(getApplicationContext(),SettingActivity.class));
+                                    MainActivity.myMediaPlaye.pause();
+                                    MainActivity.myMediaPlaye.setLooping(false);
                                 }
                             })
                             .setNegativeButton("取消", new DialogInterface.OnClickListener() {
@@ -159,12 +182,16 @@ public class MainActivity extends AppCompatActivity {
                                 public void onClick(DialogInterface dialog, int which) {
                                     Toast.makeText(getApplicationContext(), "你選擇了取消", Toast.LENGTH_SHORT).show();
                                     MainActivity.isAlertDialog = false;
+                                    MainActivity.myMediaPlaye.pause();
+                                    MainActivity.myMediaPlaye.setLooping(false);
                                 }
                             })
                             .setOnCancelListener(new DialogInterface.OnCancelListener(){
                                 @Override
                                 public void onCancel(DialogInterface dialog) {
                                     MainActivity.isAlertDialog = false;
+                                    MainActivity.myMediaPlaye.pause();
+                                    MainActivity.myMediaPlaye.setLooping(false);
                                 }
                             })
                             .show();
