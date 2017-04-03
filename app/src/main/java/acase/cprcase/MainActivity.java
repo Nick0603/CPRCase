@@ -1,6 +1,8 @@
 package acase.cprcase;
 
+import android.bluetooth.BluetoothAdapter;
 import android.content.Intent;
+import android.os.Handler;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -10,8 +12,29 @@ import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.Toast;
 
+import acase.cprcase.bluetooth.BluetoothChatService;
+
 public class MainActivity extends AppCompatActivity {
     private ImageButton Btn_pageCPR,Btn_pageBlueTooth,Btn_pageAutoConnect;
+
+    /*Name of the connected device*/
+    public static String mConnectedStatus = "未連線";
+    /*Name of the connected device*/
+    public static String mConnectedDeviceName = "";
+
+    /*Array adapter for the conversation thread*/
+
+    /*String buffer for outgoing messages */
+    public static StringBuffer mOutStringBuffer;
+
+    /* Local Bluetooth adapter*/
+    public static BluetoothAdapter mBluetoothAdapter = null;
+
+    /**Member object for the chat services*/
+    public static BluetoothChatService mChatService = null;
+
+
+    public static Handler mHandler = null;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -50,4 +73,5 @@ public class MainActivity extends AppCompatActivity {
         ActionBar actionBar = getSupportActionBar();
         actionBar.setTitle("Home");
     }
+
 }
