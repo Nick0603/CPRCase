@@ -22,4 +22,11 @@
     <string name="insecure_connect">Connect a device - Insecure</string>
     <string name="discoverable">Make discoverable</string>
 
+
+    <string name="alertATitle">警告A</string>
+    <string name="alertAContent">a 值已經超過閥值了</string>
+    <string name="alertBTitle">警告B</string>
+    <string name="alertBContent">b 值已經超過閥值了</string>
+    <string name="alertBTDisConnTitle">藍芽斷線</string>
+    <string name="alertBTDisConnContent">現在已跟arduino中斷連線</string>
 </resources>

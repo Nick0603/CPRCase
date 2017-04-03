@@ -1,9 +1,15 @@
 package acase.cprcase;
 
 
+import android.accessibilityservice.AccessibilityService;
 import android.app.Activity;
+import android.app.ActivityManager;
+import android.app.AlertDialog;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
+import android.content.ComponentName;
+import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
@@ -23,7 +29,7 @@ import android.widget.Toast;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 
-import acase.cprcase.bluetooth.BluetoothChatService;
+import acase.cprcase.bluetooth.BluetoothService;
 import acase.cprcase.bluetooth.Constants;
 import acase.cprcase.bluetooth.DeviceListActivity;
 
@@ -40,6 +46,7 @@ public class SettingActivity extends AppCompatActivity {
     private EditText mOutEditText;
     private static Button mSendButton,Btn_connectBT;
     private static TextView TV_connectStatus,TV_deviceName,TV_receiveMsg,TV_reciveTime;
+
 
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -63,11 +70,11 @@ public class SettingActivity extends AppCompatActivity {
         // Performing this check in onResume() covers the case in which BT was
         // not enabled during onStart(), so we were paused to enable it...
         // onResume() will be called when ACTION_REQUEST_ENABLE activity returns.
-        if (MainActivity.mChatService != null) {
+        if (MainActivity.mBlueToothService != null) {
             // Only if the state is STATE_NONE, do we know that we haven't started already
-            if (MainActivity.mChatService.getState() == BluetoothChatService.STATE_NONE) {
-                // Start the Bluetooth chat services
-                MainActivity.mChatService.start();
+            if (MainActivity.mBlueToothService.getState() == BluetoothService.STATE_NONE) {
+                // Start the Bluetooth services
+                MainActivity.mBlueToothService.start();
             }
         }
     }
@@ -76,13 +83,15 @@ public class SettingActivity extends AppCompatActivity {
     public void onStart() {
         super.onStart();
         // If BT is not on, request that it be enabled.
-        // setupChat() will then be called during onActivityResult
+        // setup will then be called during onActivityResult
         if (!MainActivity.mBluetoothAdapter.isEnabled()) {
             Intent enableIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
             startActivityForResult(enableIntent, REQUEST_ENABLE_BT);
             // Otherwise, setup the chat session
-        } else if (MainActivity.mChatService == null) {
-            setupChat();
+        } else if (MainActivity.mBlueToothService == null) {
+            setupBluetooth();
+        }else{
+            MainActivity.mBlueToothService.mHandler = mHandler;
         }
     }
 
@@ -95,13 +104,13 @@ public class SettingActivity extends AppCompatActivity {
     /**
      * Set up the UI and background operations for chat.
      */
-    private void setupChat() {
-        Log.d(TAG, "setupChat()");
+    private void setupBluetooth() {
+        Log.d(TAG, "setupBluetooth()");
 
-        if(MainActivity.mChatService == null) {
-            MainActivity.mChatService = new BluetoothChatService(this, mHandler);
+        if(MainActivity.mBlueToothService == null) {
+            MainActivity.mBlueToothService = new BluetoothService(this, mHandler);
         }
-        // Initialize the BluetoothChatService to perform bluetooth connections
+        // Initialize the BluetoothService to perform bluetooth connections
 
         if(MainActivity.mOutStringBuffer == null) {
             // Initialize the buffer for outgoing messages
@@ -128,16 +137,16 @@ public class SettingActivity extends AppCompatActivity {
      */
     private void sendMessage(String message) {
         // Check that we're actually connected before trying anything
-        if (MainActivity.mChatService.getState() != BluetoothChatService.STATE_CONNECTED) {
+        if (MainActivity.mBlueToothService.getState() != BluetoothService.STATE_CONNECTED) {
             Toast.makeText(this, R.string.not_connected, Toast.LENGTH_SHORT).show();
             return;
         }
 
         // Check that there's actually something to send
         if (message.length() > 0) {
-            // Get the message bytes and tell the BluetoothChatService to write
+            // Get the message bytes and tell the BluetoothService to write
             byte[] send = message.getBytes();
-            MainActivity.mChatService.write(send);
+            MainActivity.mBlueToothService.write(send);
 
             // Reset out string buffer to zero and clear the edit text field
             MainActivity.mOutStringBuffer.setLength(0);
@@ -159,62 +168,6 @@ public class SettingActivity extends AppCompatActivity {
             return true;
         }
     };
-    /**
-     * The Handler that gets information back from the BluetoothChatService
-     */
-    public static Handler mHandler = new Handler() {
-        @Override
-        public void handleMessage(Message msg) {
-            switch (msg.what) {
-                case Constants.MESSAGE_STATE_CHANGE:
-                    switch (msg.arg1) {
-                        case BluetoothChatService.STATE_CONNECTED:
-                            MainActivity.mConnectedStatus = "已連線";
-                            TV_connectStatus.setText(MainActivity.mConnectedStatus);
-                            TV_deviceName.setText(MainActivity.mConnectedDeviceName);
-                            break;
-                        case BluetoothChatService.STATE_CONNECTING:
-                            TV_connectStatus.setText(R.string.title_connecting);
-                            break;
-                        case BluetoothChatService.STATE_LISTEN:
-                        case BluetoothChatService.STATE_NONE:
-                            MainActivity.mConnectedStatus = "未連線";
-                            MainActivity.mConnectedDeviceName = "";
-                            TV_connectStatus.setText(MainActivity.mConnectedStatus);
-                            TV_deviceName.setText( MainActivity.mConnectedDeviceName);
-                            break;
-                    }
-                    break;
-                case Constants.MESSAGE_WRITE:
-
-
-                    byte[] writeBuf = (byte[]) msg.obj;
-                    // construct a string from the buffer
-                    String writeMessage = new String(writeBuf);
-                    break;
-
-                case Constants.MESSAGE_READ:
-                    byte[] readBuf = (byte[]) msg.obj;
-                    // construct a string from the valid bytes in the buffer
-
-                    String readMessage = new String(readBuf, 0 , msg.arg1);
-                    Calendar c = Calendar.getInstance();
-                    SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-                    String formattedDate = df.format(c.getTime());
-
-                    TV_receiveMsg.setText(readMessage);
-                    TV_reciveTime.setText(formattedDate);
-                    break;
-                case Constants.MESSAGE_DEVICE_NAME:
-                    // save the connected device's name
-                    MainActivity.mConnectedDeviceName = msg.getData().getString(Constants.DEVICE_NAME);
-                    break;
-                case Constants.MESSAGE_TOAST:
-
-                    break;
-            }
-        }
-    };
 
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         switch (requestCode) {
@@ -234,7 +187,7 @@ public class SettingActivity extends AppCompatActivity {
                 // When the request to enable Bluetooth returns
                 if (resultCode == Activity.RESULT_OK) {
                     // Bluetooth is now enabled, so set up a chat session
-                    setupChat();
+                    setupBluetooth();
                 } else {
                     // User did not enable Bluetooth or an error occurred
                     Log.d(TAG, "BT not enabled");
@@ -258,7 +211,7 @@ public class SettingActivity extends AppCompatActivity {
         // Get the BluetoothDevice object
         BluetoothDevice device = MainActivity.mBluetoothAdapter.getRemoteDevice(address);
         // Attempt to connect to the device
-        MainActivity.mChatService.connect(device, secure);
+        MainActivity.mBlueToothService.connect(device, secure);
     }
 
 
@@ -295,6 +248,136 @@ public class SettingActivity extends AppCompatActivity {
         });
 
     }
+
+    private Handler mHandler = new Handler() {
+        @Override
+        public void handleMessage(Message msg) {
+            switch (msg.what) {
+                case Constants.MESSAGE_STATE_CHANGE:
+                    switch (msg.arg1) {
+                        case BluetoothService.STATE_CONNECTED:
+                            MainActivity.mConnectedStatus = "已連線";
+                            TV_connectStatus.setText(MainActivity.mConnectedStatus);
+                            TV_deviceName.setText(MainActivity.mConnectedDeviceName);
+                            break;
+                        case BluetoothService.STATE_CONNECTING:
+                            TV_connectStatus.setText(R.string.title_connecting);
+                            break;
+                        case BluetoothService.STATE_LISTEN:
+                        case BluetoothService.STATE_NONE:
+                            MainActivity.mConnectedStatus = "未連線";
+                            MainActivity.mConnectedDeviceName = "";
+                            TV_connectStatus.setText(MainActivity.mConnectedStatus);
+                            TV_deviceName.setText( MainActivity.mConnectedDeviceName);
+                            break;
+                    }
+                    break;
+                case Constants.MESSAGE_WRITE:
+
+
+                    byte[] writeBuf = (byte[]) msg.obj;
+                    // construct a string from the buffer
+                    String writeMessage = new String(writeBuf);
+                    break;
+
+                case Constants.MESSAGE_READ:
+                    byte[] readBuf = (byte[]) msg.obj;
+                    // construct a string from the valid bytes in the buffer
+
+                    String readMessage = new String(readBuf, 0 , msg.arg1);
+                    Calendar c = Calendar.getInstance();
+                    SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+                    String formattedDate = df.format(c.getTime());
+
+                    TV_receiveMsg.setText(readMessage);
+                    TV_reciveTime.setText(formattedDate);
+
+                    if(readMessage.equals("a") && MainActivity.isAlertDialog == false){
+                        MainActivity.isAlertDialog = true;
+                        new AlertDialog.Builder(SettingActivity.this)
+                                .setTitle(R.string.alertATitle)
+                                .setMessage(R.string.alertAContent)
+                                .setPositiveButton("前往急救教學", new DialogInterface.OnClickListener() {
+                                    @Override
+                                    public void onClick(DialogInterface dialog, int which) {
+                                        MainActivity.isAlertDialog = false;
+                                        SettingActivity.this.finish();
+                                        startActivity(new Intent(getApplicationContext(),CPRActivity.class));
+                                    }
+                                })
+                                .setNegativeButton("取消", new DialogInterface.OnClickListener() {
+                                    @Override
+                                    public void onClick(DialogInterface dialog, int which) {
+                                        Toast.makeText(getApplicationContext(), "你選擇了取消", Toast.LENGTH_SHORT).show();
+                                        MainActivity.isAlertDialog = false;
+                                    }
+                                })
+                                .setOnCancelListener(new DialogInterface.OnCancelListener(){
+                                    @Override
+                                    public void onCancel(DialogInterface dialog) {
+                                        MainActivity.isAlertDialog = false;
+                                    }
+                                })
+                                .show();
+                    }else if(readMessage.equals("b") && MainActivity.isAlertDialog == false){
+                        MainActivity.isAlertDialog = true;
+                        new AlertDialog.Builder(SettingActivity.this)
+                                .setTitle(R.string.alertBTitle)
+                                .setMessage(R.string.alertBContent)
+                                .setPositiveButton("確認", new DialogInterface.OnClickListener() {
+                                    @Override
+                                    public void onClick(DialogInterface dialog, int which) {
+                                        Toast.makeText(getApplicationContext(), "你選擇了取消", Toast.LENGTH_SHORT).show();
+                                        MainActivity.isAlertDialog = false;
+                                    }
+                                })
+
+                                .setOnCancelListener(new DialogInterface.OnCancelListener(){
+                                    @Override
+                                    public void onCancel(DialogInterface dialog) {
+                                        MainActivity.isAlertDialog = false;
+                                    }
+                                })
+                                .show();
+                    }
+
+
+
+
+                    break;
+                case Constants.MESSAGE_DEVICE_NAME:
+                    // save the connected device's name
+                    MainActivity.mConnectedDeviceName = msg.getData().getString(Constants.DEVICE_NAME);
+                    break;
+                case Constants.MESSAGE_TOAST:
+                    new AlertDialog.Builder(SettingActivity.this)
+                            .setTitle(R.string.alertBTDisConnTitle)
+                            .setMessage(R.string.alertBTDisConnContent)
+                            .setPositiveButton("前往設定頁面", new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialog, int which) {
+                                    MainActivity.isAlertDialog = false;
+                                    SettingActivity.this.finish();
+                                    startActivity(new Intent(getApplicationContext(),SettingActivity.class));
+                                }
+                            })
+                            .setNegativeButton("取消", new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialog, int which) {
+                                    Toast.makeText(getApplicationContext(), "你選擇了取消", Toast.LENGTH_SHORT).show();
+                                    MainActivity.isAlertDialog = false;
+                                }
+                            })
+                            .setOnCancelListener(new DialogInterface.OnCancelListener(){
+                                @Override
+                                public void onCancel(DialogInterface dialog) {
+                                    MainActivity.isAlertDialog = false;
+                                }
+                            })
+                            .show();
+            }
+        }
+    };
     void setToolBar(){
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
