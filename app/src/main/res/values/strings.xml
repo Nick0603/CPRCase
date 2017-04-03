@@ -29,4 +29,6 @@
     <string name="alertBContent">b 值已經超過閥值了</string>
     <string name="alertBTDisConnTitle">藍芽斷線</string>
     <string name="alertBTDisConnContent">現在已跟arduino中斷連線</string>
+
+    <string name="lastBTNoStored">尚未儲存任何藍芽資料</string>
 </resources>

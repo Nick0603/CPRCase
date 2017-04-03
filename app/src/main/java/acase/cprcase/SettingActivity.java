@@ -53,31 +53,9 @@ public class SettingActivity extends AppCompatActivity {
         setContentView(R.layout.activity_setting);
         setToolBar();
         initElement();
-        // Get local Bluetooth adapter
-        MainActivity.mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
-
-        // If the adapter is null, then Bluetooth is not supported
-        if (MainActivity.mBluetoothAdapter == null) {
-            Activity activity = this;
-            Toast.makeText(activity, "Bluetooth is not available", Toast.LENGTH_LONG).show();
-            activity.finish();
-        }
     }
 
-    @Override
-    public void onResume() {
-        super.onResume();
-        // Performing this check in onResume() covers the case in which BT was
-        // not enabled during onStart(), so we were paused to enable it...
-        // onResume() will be called when ACTION_REQUEST_ENABLE activity returns.
-        if (MainActivity.mBlueToothService != null) {
-            // Only if the state is STATE_NONE, do we know that we haven't started already
-            if (MainActivity.mBlueToothService.getState() == BluetoothService.STATE_NONE) {
-                // Start the Bluetooth services
-                MainActivity.mBlueToothService.start();
-            }
-        }
-    }
+
 
     @Override
     public void onStart() {
@@ -88,11 +66,8 @@ public class SettingActivity extends AppCompatActivity {
             Intent enableIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
             startActivityForResult(enableIntent, REQUEST_ENABLE_BT);
             // Otherwise, setup the chat session
-        } else if (MainActivity.mBlueToothService == null) {
-            setupBluetooth();
-        }else{
-            MainActivity.mBlueToothService.mHandler = mHandler;
         }
+        MainActivity.mBlueToothService.mHandler = mHandler;
     }
 
     @Override
@@ -102,37 +77,7 @@ public class SettingActivity extends AppCompatActivity {
     }
 
     /**
-     * Set up the UI and background operations for chat.
-     */
-    private void setupBluetooth() {
-        Log.d(TAG, "setupBluetooth()");
-
-        if(MainActivity.mBlueToothService == null) {
-            MainActivity.mBlueToothService = new BluetoothService(this, mHandler);
-        }
-        // Initialize the BluetoothService to perform bluetooth connections
-
-        if(MainActivity.mOutStringBuffer == null) {
-            // Initialize the buffer for outgoing messages
-            MainActivity.mOutStringBuffer = new StringBuffer("");
-        }
-    }
-
-    /**
-     * Makes this device discoverable for 300 seconds (5 minutes).
-     */
-    private void ensureDiscoverable() {
-        if (MainActivity.mBluetoothAdapter.getScanMode() !=
-                BluetoothAdapter.SCAN_MODE_CONNECTABLE_DISCOVERABLE) {
-            Intent discoverableIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_DISCOVERABLE);
-            discoverableIntent.putExtra(BluetoothAdapter.EXTRA_DISCOVERABLE_DURATION, 300);
-            startActivity(discoverableIntent);
-        }
-    }
-
-    /**
      * Sends a message.
-     *
      * @param message A string of text to send.
      */
     private void sendMessage(String message) {
@@ -184,17 +129,11 @@ public class SettingActivity extends AppCompatActivity {
                 }
                 break;
             case REQUEST_ENABLE_BT:
-                // When the request to enable Bluetooth returns
-                if (resultCode == Activity.RESULT_OK) {
-                    // Bluetooth is now enabled, so set up a chat session
-                    setupBluetooth();
-                } else {
-                    // User did not enable Bluetooth or an error occurred
-                    Log.d(TAG, "BT not enabled");
-                    Toast.makeText(SettingActivity.this, R.string.bt_not_enabled_leaving,
-                            Toast.LENGTH_SHORT).show();
-                    SettingActivity.this.finish();
-                }
+                // User did not enable Bluetooth or an error occurred
+                Log.d(TAG, "BT not enabled");
+                Toast.makeText(SettingActivity.this, R.string.bt_not_enabled_leaving,
+                        Toast.LENGTH_SHORT).show();
+                SettingActivity.this.finish();
         }
     }
 
@@ -208,6 +147,12 @@ public class SettingActivity extends AppCompatActivity {
         // Get the device MAC address
         String address = data.getExtras()
                 .getString(DeviceListActivity.EXTRA_DEVICE_ADDRESS);
+
+        MainActivity.editor.clear();
+        MainActivity.editor.putBoolean(MainActivity.SharePreSecure, secure);
+        MainActivity.editor.putString(MainActivity.SharePreAddress, address);
+        MainActivity.editor.commit();
+
         // Get the BluetoothDevice object
         BluetoothDevice device = MainActivity.mBluetoothAdapter.getRemoteDevice(address);
         // Attempt to connect to the device
@@ -312,7 +257,6 @@ public class SettingActivity extends AppCompatActivity {
                                 .setNegativeButton("取消", new DialogInterface.OnClickListener() {
                                     @Override
                                     public void onClick(DialogInterface dialog, int which) {
-                                        Toast.makeText(getApplicationContext(), "你選擇了取消", Toast.LENGTH_SHORT).show();
                                         MainActivity.isAlertDialog = false;
                                         MainActivity.myMediaPlaye.pause();
                                         MainActivity.myMediaPlaye.setLooping(false);
@@ -337,7 +281,6 @@ public class SettingActivity extends AppCompatActivity {
                                 .setPositiveButton("確認", new DialogInterface.OnClickListener() {
                                     @Override
                                     public void onClick(DialogInterface dialog, int which) {
-                                        Toast.makeText(getApplicationContext(), "你選擇了取消", Toast.LENGTH_SHORT).show();
                                         MainActivity.isAlertDialog = false;
                                         MainActivity.myMediaPlaye.pause();
                                         MainActivity.myMediaPlaye.setLooping(false);
@@ -383,7 +326,6 @@ public class SettingActivity extends AppCompatActivity {
                             .setNegativeButton("取消", new DialogInterface.OnClickListener() {
                                 @Override
                                 public void onClick(DialogInterface dialog, int which) {
-                                    Toast.makeText(getApplicationContext(), "你選擇了取消", Toast.LENGTH_SHORT).show();
                                     MainActivity.isAlertDialog = false;
                                     MainActivity.myMediaPlaye.pause();
                                     MainActivity.myMediaPlaye.setLooping(false);

@@ -11,6 +11,7 @@ package acase.cprcase;
         import android.support.v7.widget.Toolbar;
         import android.widget.Toast;
 
+        import acase.cprcase.bluetooth.BluetoothService;
         import acase.cprcase.bluetooth.Constants;
 
 
@@ -38,7 +39,14 @@ public class CPRActivity  extends AppCompatActivity {
         @Override
         public void handleMessage(Message msg) {
             switch (msg.what) {
-
+                case Constants.MESSAGE_STATE_CHANGE:
+                    switch (msg.arg1) {
+                        case BluetoothService.STATE_NONE:
+                            MainActivity.mConnectedStatus = "未連線";
+                            MainActivity.mConnectedDeviceName = "";
+                            break;
+                    }
+                    break;
                 case Constants.MESSAGE_READ:
                     byte[] readBuf = (byte[]) msg.obj;
                     // construct a string from the valid bytes in the buffer
@@ -63,7 +71,6 @@ public class CPRActivity  extends AppCompatActivity {
                                 .setNegativeButton("取消", new DialogInterface.OnClickListener() {
                                     @Override
                                     public void onClick(DialogInterface dialog, int which) {
-                                        Toast.makeText(getApplicationContext(), "你選擇了取消", Toast.LENGTH_SHORT).show();
                                         MainActivity.isAlertDialog = false;
                                         MainActivity.myMediaPlaye.pause();
                                         MainActivity.myMediaPlaye.setLooping(false);
@@ -88,7 +95,6 @@ public class CPRActivity  extends AppCompatActivity {
                                 .setPositiveButton("確認", new DialogInterface.OnClickListener() {
                                     @Override
                                     public void onClick(DialogInterface dialog, int which) {
-                                        Toast.makeText(getApplicationContext(), "你選擇了取消", Toast.LENGTH_SHORT).show();
                                         MainActivity.isAlertDialog = false;
                                         MainActivity.myMediaPlaye.pause();
                                         MainActivity.myMediaPlaye.setLooping(false);
@@ -126,7 +132,6 @@ public class CPRActivity  extends AppCompatActivity {
                             .setNegativeButton("取消", new DialogInterface.OnClickListener() {
                                 @Override
                                 public void onClick(DialogInterface dialog, int which) {
-                                    Toast.makeText(getApplicationContext(), "你選擇了取消", Toast.LENGTH_SHORT).show();
                                     MainActivity.isAlertDialog = false;
                                     MainActivity.myMediaPlaye.pause();
                                     MainActivity.myMediaPlaye.setLooping(false);

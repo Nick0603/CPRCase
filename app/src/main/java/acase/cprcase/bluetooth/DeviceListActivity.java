@@ -23,6 +23,7 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -38,6 +39,8 @@ import android.widget.TextView;
 import java.util.Set;
 
 import acase.cprcase.R;
+
+import static android.provider.Contacts.SettingsColumns.KEY;
 
 /**
  * This Activity appears as a dialog. It lists any paired devices and
@@ -66,6 +69,8 @@ public class DeviceListActivity extends Activity {
      * Newly discovered devices
      */
     private ArrayAdapter<String> mNewDevicesArrayAdapter;
+
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
