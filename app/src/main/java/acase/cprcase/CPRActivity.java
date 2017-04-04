@@ -10,8 +10,6 @@ package acase.cprcase;
         import android.support.v7.app.AppCompatActivity;
         import android.support.v7.widget.Toolbar;
         import android.widget.Toast;
-
-        import acase.cprcase.bluetooth.BluetoothService;
         import acase.cprcase.bluetooth.Constants;
 
 
@@ -22,6 +20,7 @@ public class CPRActivity  extends AppCompatActivity {
         setContentView(R.layout.activity_cpr);
         setToolBar();
 
+        // 更新mHandler
         if(MainActivity.mBlueToothService != null){
             MainActivity.mBlueToothService.mHandler = mHandler;
         }

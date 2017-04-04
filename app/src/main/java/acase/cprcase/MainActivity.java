@@ -34,14 +34,7 @@ public class MainActivity extends AppCompatActivity {
 
     /*Name of the connected device*/
     public static String mConnectedDeviceName = "";
-
-    /*String buffer for outgoing messages */
-    public static StringBuffer mOutStringBuffer = null ;
-
-    /* Local Bluetooth adapter*/
     public static BluetoothAdapter mBluetoothAdapter = null;
-
-    /**Member object for the chat services*/
     public static BluetoothService mBlueToothService = null;
 
     public static long lastAlertTime = 0;
@@ -64,22 +57,22 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        // local資料庫建立
         spref = getPreferences(MODE_PRIVATE);
         editor = spref.edit();
-        myVibrator = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
 
-        myMediaPlaye = MediaPlayer.create(this, R.raw.alert);
-
+        // 藍芽建立
         MainActivity.mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
         if (MainActivity.mBluetoothAdapter == null) {
             Activity activity = this;
             Toast.makeText(activity, "Bluetooth is not available", Toast.LENGTH_LONG).show();
             activity.finish();
         }
-        if(mBlueToothService != null){
-            MainActivity.mBlueToothService.mHandler = mHandler;
-        }
 
+        // 元件建立
+        myVibrator = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
+        myMediaPlaye = MediaPlayer.create(this, R.raw.alert);
         lastAlertTime = System.currentTimeMillis();
         Btn_pageCPR = (Button) findViewById(R.id.Btn_pageCPR);
         Btn_pageBlueTooth = (Button) findViewById(R.id.Btn_pageBlueTooth);
@@ -106,15 +99,17 @@ public class MainActivity extends AppCompatActivity {
     @Override
     public void onStart() {
         super.onStart();
-        // If BT is not on, request that it be enabled.
-        // setup will then be called during onActivityResult
+
+        // 藍芽功能偵測  => 開啟
         if (!MainActivity.mBluetoothAdapter.isEnabled()) {
             Intent enableIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
             startActivityForResult(enableIntent, REQUEST_ENABLE_BT);
             // Otherwise, setup the chat session
         } else if (MainActivity.mBlueToothService == null) {
-            setupBluetooth();
+            // setup mBlueToothService
+            MainActivity.mBlueToothService = new BluetoothService(this, mHandler);
         }else{
+            // update mHandler
             MainActivity.mBlueToothService.mHandler = mHandler;
         }
 
@@ -135,16 +130,18 @@ public class MainActivity extends AppCompatActivity {
         Btn_AutoConnect.setOnClickListener(new Button.OnClickListener(){
             @Override
             public void onClick(View v) {
+                // 待連線狀態 才可使用此按鈕
                 if (mBlueToothService.getState() == BluetoothService.STATE_NONE ||
                         mBlueToothService.getState() == BluetoothService.STATE_LISTEN) {
+
                     Boolean lastBTSecure = MainActivity.spref.getBoolean(MainActivity.SharePreSecure, false);
                     String lastBTAddress = MainActivity.spref.getString(MainActivity.SharePreAddress, null);
 
                     if (lastBTAddress != null) {
                         // Get the BluetoothDevice object
-                        BluetoothDevice device = MainActivity.mBluetoothAdapter.getRemoteDevice(lastBTAddress);
+                        BluetoothDevice lastDevice = MainActivity.mBluetoothAdapter.getRemoteDevice(lastBTAddress);
                         // Attempt to connect to the device
-                        MainActivity.mBlueToothService.connect(device, lastBTSecure);
+                        MainActivity.mBlueToothService.connect(lastDevice, lastBTSecure);
                     } else {
                         Toast.makeText(MainActivity.this, R.string.lastBTNoStored, Toast.LENGTH_SHORT).show();
                     }
@@ -155,21 +152,8 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
-    private void setupBluetooth() {
-        Log.d(TAG, "setupBluetooth()");
-
-        if(MainActivity.mBlueToothService == null) {
-            MainActivity.mBlueToothService = new BluetoothService(this, mHandler);
-        }
-        // Initialize the BluetoothService to perform bluetooth connections
-
-        if(MainActivity.mOutStringBuffer == null) {
-            // Initialize the buffer for outgoing messages
-            MainActivity.mOutStringBuffer = new StringBuffer("");
-        }
-    }
-
     void setToolBar(){
+        Log.d(TAG, "setToolBar()");
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         ActionBar actionBar = getSupportActionBar();

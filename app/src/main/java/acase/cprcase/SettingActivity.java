@@ -92,27 +92,8 @@ public class SettingActivity extends AppCompatActivity {
             // Get the message bytes and tell the BluetoothService to write
             byte[] send = message.getBytes();
             MainActivity.mBlueToothService.write(send);
-
-            // Reset out string buffer to zero and clear the edit text field
-            MainActivity.mOutStringBuffer.setLength(0);
-            mOutEditText.setText(MainActivity.mOutStringBuffer);
         }
     }
-
-    /**
-     * The action listener for the EditText widget, to listen for the return key
-     */
-    private TextView.OnEditorActionListener mWriteListener
-            = new TextView.OnEditorActionListener() {
-        public boolean onEditorAction(TextView view, int actionId, KeyEvent event) {
-            // If the action is a key-up event on the return key, send the message
-            if (actionId == EditorInfo.IME_NULL && event.getAction() == KeyEvent.ACTION_UP) {
-                String message = view.getText().toString();
-                sendMessage(message);
-            }
-            return true;
-        }
-    };
 
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         switch (requestCode) {
@@ -136,7 +117,6 @@ public class SettingActivity extends AppCompatActivity {
 
     /**
      * Establish connection with other device
-     *
      * @param data   An {@link Intent} with {@link DeviceListActivity#EXTRA_DEVICE_ADDRESS} extra.
      * @param secure Socket Security type - Secure (true) , Insecure (false)
      */
@@ -173,16 +153,13 @@ public class SettingActivity extends AppCompatActivity {
             TV_deviceName.setText( "");
         }
 
-        // Initialize the compose field with a listener for the return key
-        mOutEditText.setOnEditorActionListener(mWriteListener);
-
         // Initialize the send button with a listener that for click events
         mSendButton.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 // Send a message using content of the edit text widget
-                TextView textView = (TextView) findViewById(R.id.edit_text_out);
-                String message = textView.getText().toString();
+                String message = mOutEditText.getText().toString();
                 sendMessage(message);
+                mOutEditText.setText("");
             }
         });
 
@@ -195,6 +172,15 @@ public class SettingActivity extends AppCompatActivity {
         });
 
     }
+
+    void setToolBar(){
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+        ActionBar actionBar = getSupportActionBar();
+        actionBar.setTitle(R.string.SettingPage);
+        actionBar.setDisplayHomeAsUpEnabled(true);
+    }
+
 
     private Handler mHandler = new Handler() {
         @Override
@@ -324,11 +310,4 @@ public class SettingActivity extends AppCompatActivity {
             }
         }
     };
-    void setToolBar(){
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
-        ActionBar actionBar = getSupportActionBar();
-        actionBar.setTitle(R.string.SettingPage);
-        actionBar.setDisplayHomeAsUpEnabled(true);
-    }
 }
