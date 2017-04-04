@@ -238,10 +238,11 @@ public class SettingActivity extends AppCompatActivity {
                     TV_receiveMsg.setText(readMessage);
                     TV_reciveTime.setText(formattedDate);
 
-                    if(readMessage.equals("a") && MainActivity.isAlertDialog == false){
+                    if(readMessage.equals("a") && MainActivity.isAlertDialog == false && System.currentTimeMillis() - MainActivity.lastAlertTime > MainActivity.alertDelayTime){
                         MainActivity.myMediaPlaye.start();
                         MainActivity.myMediaPlaye.setLooping(true);
                         MainActivity.isAlertDialog = true;
+                        MainActivity.lastAlertTime = System.currentTimeMillis();
                         new AlertDialog.Builder(SettingActivity.this)
                                 .setTitle(R.string.alertATitle)
                                 .setMessage(R.string.alertAContent)
@@ -272,7 +273,7 @@ public class SettingActivity extends AppCompatActivity {
                                     }
                                 })
                                 .show();
-                    }else if(readMessage.equals("b") && MainActivity.isAlertDialog == false){
+                    }else if(readMessage.equals("b") && MainActivity.isAlertDialog == false && System.currentTimeMillis() - MainActivity.lastAlertTime > MainActivity.alertDelayTime){
                         MainActivity.myMediaPlaye.start();
                         MainActivity.myMediaPlaye.setLooping(true);
                         MainActivity.isAlertDialog = true;
@@ -311,6 +312,7 @@ public class SettingActivity extends AppCompatActivity {
                     MainActivity.myMediaPlaye.start();
                     MainActivity.myMediaPlaye.setLooping(true);
                     MainActivity.isAlertDialog = true;
+                    MainActivity.lastAlertTime = System.currentTimeMillis();
                     new AlertDialog.Builder(SettingActivity.this)
                             .setTitle(R.string.alertBTDisConnTitle)
                             .setMessage(R.string.alertBTDisConnContent)

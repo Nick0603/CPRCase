@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:orientation="vertical" android:layout_width="match_parent"
     android:layout_height="match_parent">
 
@@ -36,8 +37,8 @@
             android:layout_height="wrap_content"
             android:layout_margin="10dp"
             android:layout_weight="1"
-            android:text="getStatus"
-            android:textSize="24sp" />
+            android:textSize="24sp"
+            tools:text="getStatus" />
     </LinearLayout>
 
     <LinearLayout
@@ -58,8 +59,8 @@
             android:layout_height="wrap_content"
             android:layout_margin="10dp"
             android:layout_weight="1"
-            android:text="getDeviceName"
-            android:textSize="24sp" />
+            android:textSize="24sp"
+            tools:text="getDeviceName" />
     </LinearLayout>
 
     <LinearLayout
@@ -81,8 +82,8 @@
             android:layout_height="wrap_content"
             android:layout_margin="10dp"
             android:layout_weight="1"
-            android:text="getMeg"
-            android:textSize="24sp" />
+            android:textSize="24sp"
+            tools:text="getMeg" />
     </LinearLayout>
 
     <LinearLayout
@@ -103,8 +104,8 @@
             android:layout_height="wrap_content"
             android:layout_margin="10dp"
             android:layout_weight="1"
-            android:text="getMegTime"
-            android:textSize="24sp" />
+            android:textSize="24sp"
+            tools:text="getMegTime" />
 
     </LinearLayout>
 

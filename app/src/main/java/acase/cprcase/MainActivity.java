@@ -33,8 +33,6 @@ public class MainActivity extends AppCompatActivity {
     /*Name of the connected device*/
     public static String mConnectedDeviceName = "";
 
-    /*Array adapter for the conversation thread*/
-
     /*String buffer for outgoing messages */
     public static StringBuffer mOutStringBuffer = null ;
 
@@ -44,6 +42,8 @@ public class MainActivity extends AppCompatActivity {
     /**Member object for the chat services*/
     public static BluetoothService mBlueToothService = null;
 
+    public static long lastAlertTime = 0;
+    public static final int alertDelayTime = 3 * 1000;
     public static boolean isAlertDialog  = false;
     public static MediaPlayer myMediaPlaye;
 
@@ -75,6 +75,7 @@ public class MainActivity extends AppCompatActivity {
             MainActivity.mBlueToothService.mHandler = mHandler;
         }
 
+        lastAlertTime = System.currentTimeMillis();
         Btn_pageCPR = (Button) findViewById(R.id.Btn_pageCPR);
         Btn_pageBlueTooth = (Button) findViewById(R.id.Btn_pageBlueTooth);
         Btn_AutoConnect = (Button) findViewById(R.id.Btn_AutoConnect);
@@ -191,10 +192,11 @@ public class MainActivity extends AppCompatActivity {
                     // construct a string from the valid bytes in the buffer
                     String readMessage = new String(readBuf, 0 , msg.arg1);
 
-                    if(readMessage.equals("a") && MainActivity.isAlertDialog == false){
+                    if(readMessage.equals("a") && MainActivity.isAlertDialog == false && System.currentTimeMillis() - lastAlertTime > alertDelayTime){
                         MainActivity.myMediaPlaye.start();
                         MainActivity.myMediaPlaye.setLooping(true);
                         MainActivity.isAlertDialog = true;
+                        lastAlertTime = System.currentTimeMillis();
                         new android.app.AlertDialog.Builder(MainActivity.this)
                                 .setTitle(R.string.alertATitle)
                                 .setMessage(R.string.alertAContent)
@@ -224,10 +226,11 @@ public class MainActivity extends AppCompatActivity {
                                     }
                                 })
                                 .show();
-                    }else if(readMessage.equals("b") && MainActivity.isAlertDialog == false){
+                    }else if(readMessage.equals("b") && MainActivity.isAlertDialog == false && System.currentTimeMillis() - lastAlertTime > alertDelayTime){
                         MainActivity.myMediaPlaye.start();
                         MainActivity.myMediaPlaye.setLooping(true);
                         MainActivity.isAlertDialog = true;
+                        lastAlertTime = System.currentTimeMillis();
                         new android.app.AlertDialog.Builder(MainActivity.this)
                                 .setTitle(R.string.alertBTitle)
                                 .setMessage(R.string.alertBContent)
