@@ -7,7 +7,6 @@
     <!--  BluetoothChat -->
     <string name="send">Send</string>
     <string name="not_connected">無連接到藍芽裝置</string>
-    <string name="bt_not_enabled">藍芽未啟動</string>
     <string name="title_disConnected">尚未連線</string>
     <string name="title_connecting">連線中...</string>
     <string name="title_connected">已連線</string>

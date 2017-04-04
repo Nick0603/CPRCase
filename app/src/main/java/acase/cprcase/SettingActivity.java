@@ -131,8 +131,6 @@ public class SettingActivity extends AppCompatActivity {
             case REQUEST_ENABLE_BT:
                 // User did not enable Bluetooth or an error occurred
                 Log.d(TAG, "BT not enabled");
-                Toast.makeText(SettingActivity.this, R.string.bt_not_enabled,
-                        Toast.LENGTH_SHORT).show();
         }
     }
 
@@ -239,62 +237,47 @@ public class SettingActivity extends AppCompatActivity {
                     TV_reciveTime.setText(formattedDate);
 
                     if(readMessage.equals("a") && MainActivity.isAlertDialog == false && System.currentTimeMillis() - MainActivity.lastAlertTime > MainActivity.alertDelayTime){
-                        MainActivity.myMediaPlaye.start();
-                        MainActivity.myMediaPlaye.setLooping(true);
-                        MainActivity.isAlertDialog = true;
-                        MainActivity.lastAlertTime = System.currentTimeMillis();
+                        MainActivity.alertStart();
                         new AlertDialog.Builder(SettingActivity.this)
                                 .setTitle(R.string.alertATitle)
                                 .setMessage(R.string.alertAContent)
                                 .setPositiveButton(R.string.alertAPositiveBtn, new DialogInterface.OnClickListener() {
                                     @Override
                                     public void onClick(DialogInterface dialog, int which) {
-                                        MainActivity.isAlertDialog = false;
                                         SettingActivity.this.finish();
                                         startActivity(new Intent(getApplicationContext(),CPRActivity.class));
-                                        MainActivity.myMediaPlaye.pause();
-                                        MainActivity.myMediaPlaye.setLooping(false);
+                                        MainActivity.alertStop();
                                     }
                                 })
                                 .setNegativeButton(R.string.alertANegativeBtn, new DialogInterface.OnClickListener() {
                                     @Override
                                     public void onClick(DialogInterface dialog, int which) {
-                                        MainActivity.isAlertDialog = false;
-                                        MainActivity.myMediaPlaye.pause();
-                                        MainActivity.myMediaPlaye.setLooping(false);
+                                        MainActivity.alertStop();
                                     }
                                 })
                                 .setOnCancelListener(new DialogInterface.OnCancelListener(){
                                     @Override
                                     public void onCancel(DialogInterface dialog) {
-                                        MainActivity.isAlertDialog = false;
-                                        MainActivity.myMediaPlaye.pause();
-                                        MainActivity.myMediaPlaye.setLooping(false);
+                                        MainActivity.alertStop();
                                     }
                                 })
                                 .show();
                     }else if(readMessage.equals("b") && MainActivity.isAlertDialog == false && System.currentTimeMillis() - MainActivity.lastAlertTime > MainActivity.alertDelayTime){
-                        MainActivity.myMediaPlaye.start();
-                        MainActivity.myMediaPlaye.setLooping(true);
-                        MainActivity.isAlertDialog = true;
+                        MainActivity.alertStart();
                         new AlertDialog.Builder(SettingActivity.this)
                                 .setTitle(R.string.alertBTitle)
                                 .setMessage(R.string.alertBContent)
                                 .setPositiveButton(R.string.alertBPositiveBtn, new DialogInterface.OnClickListener() {
                                     @Override
                                     public void onClick(DialogInterface dialog, int which) {
-                                        MainActivity.isAlertDialog = false;
-                                        MainActivity.myMediaPlaye.pause();
-                                        MainActivity.myMediaPlaye.setLooping(false);
+                                        MainActivity.alertStop();
                                     }
                                 })
 
                                 .setOnCancelListener(new DialogInterface.OnCancelListener(){
                                     @Override
                                     public void onCancel(DialogInterface dialog) {
-                                        MainActivity.isAlertDialog = false;
-                                        MainActivity.myMediaPlaye.pause();
-                                        MainActivity.myMediaPlaye.setLooping(false);
+                                        MainActivity.alertStop();
                                     }
                                 })
                                 .show();
@@ -309,37 +292,28 @@ public class SettingActivity extends AppCompatActivity {
                     MainActivity.mConnectedDeviceName = msg.getData().getString(Constants.DEVICE_NAME);
                     break;
                 case Constants.MESSAGE_CONNLOST:
-                    MainActivity.myMediaPlaye.start();
-                    MainActivity.myMediaPlaye.setLooping(true);
-                    MainActivity.isAlertDialog = true;
-                    MainActivity.lastAlertTime = System.currentTimeMillis();
+                    MainActivity.alertStart();
                     new AlertDialog.Builder(SettingActivity.this)
                             .setTitle(R.string.alertBTDisConnTitle)
                             .setMessage(R.string.alertBTDisConnContent)
                             .setPositiveButton(R.string.alertBTPositiveBtn, new DialogInterface.OnClickListener() {
                                 @Override
                                 public void onClick(DialogInterface dialog, int which) {
-                                    MainActivity.isAlertDialog = false;
                                     SettingActivity.this.finish();
                                     startActivity(new Intent(getApplicationContext(),SettingActivity.class));
-                                    MainActivity.myMediaPlaye.pause();
-                                    MainActivity.myMediaPlaye.setLooping(false);
+                                    MainActivity.alertStop();
                                 }
                             })
                             .setNegativeButton(R.string.alertBTNegativeBtn, new DialogInterface.OnClickListener() {
                                 @Override
                                 public void onClick(DialogInterface dialog, int which) {
-                                    MainActivity.isAlertDialog = false;
-                                    MainActivity.myMediaPlaye.pause();
-                                    MainActivity.myMediaPlaye.setLooping(false);
+                                    MainActivity.alertStop();
                                 }
                             })
                             .setOnCancelListener(new DialogInterface.OnCancelListener(){
                                 @Override
                                 public void onCancel(DialogInterface dialog) {
-                                    MainActivity.isAlertDialog = false;
-                                    MainActivity.myMediaPlaye.pause();
-                                    MainActivity.myMediaPlaye.setLooping(false);
+                                    MainActivity.alertStop();
                                 }
                             })
                             .show();
