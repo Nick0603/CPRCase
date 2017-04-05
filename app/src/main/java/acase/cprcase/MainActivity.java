@@ -53,6 +53,9 @@ public class MainActivity extends AppCompatActivity {
     public static final String SharePreSecure = "lastConnSecure";
     public static final String SharePreAddress = "lastConnAddress";
 
+    public static final String AlertACondition = "a";
+    public static final String AlertBCondition = "b";
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -181,7 +184,7 @@ public class MainActivity extends AppCompatActivity {
                     // construct a string from the valid bytes in the buffer
                     String readMessage = new String(readBuf, 0 , msg.arg1);
 
-                    if(readMessage.equals("a") && MainActivity.isAlertDialog == false && System.currentTimeMillis() - lastAlertTime > alertDelayTime){
+                    if(readMessage.equals(AlertACondition) && MainActivity.isAlertDialog == false && System.currentTimeMillis() - lastAlertTime > alertDelayTime){
                         alertStart();
                         new android.app.AlertDialog.Builder(MainActivity.this)
                                 .setTitle(R.string.alertATitle)
@@ -206,7 +209,7 @@ public class MainActivity extends AppCompatActivity {
                                     }
                                 })
                                 .show();
-                    }else if(readMessage.equals("b") && MainActivity.isAlertDialog == false && System.currentTimeMillis() - lastAlertTime > alertDelayTime){
+                    }else if(readMessage.equals(AlertBCondition) && MainActivity.isAlertDialog == false && System.currentTimeMillis() - lastAlertTime > alertDelayTime){
                         alertStart();
                         new android.app.AlertDialog.Builder(MainActivity.this)
                                 .setTitle(R.string.alertBTitle)

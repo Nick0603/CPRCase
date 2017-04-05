@@ -43,7 +43,7 @@ public class CPRActivity  extends AppCompatActivity {
                     // construct a string from the valid bytes in the buffer
                     String readMessage = new String(readBuf, 0 , msg.arg1);
 
-                    if(readMessage.equals("a") && MainActivity.isAlertDialog == false && System.currentTimeMillis() - MainActivity.lastAlertTime > MainActivity.alertDelayTime){
+                    if(readMessage.equals(MainActivity.AlertACondition) && MainActivity.isAlertDialog == false && System.currentTimeMillis() - MainActivity.lastAlertTime > MainActivity.alertDelayTime){
                         MainActivity.alertStart();
                         new android.app.AlertDialog.Builder(CPRActivity.this)
                                 .setTitle(R.string.alertATitle)
@@ -68,7 +68,7 @@ public class CPRActivity  extends AppCompatActivity {
                                     }
                                 })
                                 .show();
-                    }else if(readMessage.equals("b") && MainActivity.isAlertDialog == false && System.currentTimeMillis() - MainActivity.lastAlertTime > MainActivity.alertDelayTime){
+                    }else if(readMessage.equals(MainActivity.AlertBCondition) && MainActivity.isAlertDialog == false && System.currentTimeMillis() - MainActivity.lastAlertTime > MainActivity.alertDelayTime){
                         MainActivity.alertStart();
                         new android.app.AlertDialog.Builder(CPRActivity.this)
                                 .setTitle(R.string.alertBTitle)

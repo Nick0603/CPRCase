@@ -222,7 +222,7 @@ public class SettingActivity extends AppCompatActivity {
                     TV_receiveMsg.setText(readMessage);
                     TV_reciveTime.setText(formattedDate);
 
-                    if(readMessage.equals("a") && MainActivity.isAlertDialog == false && System.currentTimeMillis() - MainActivity.lastAlertTime > MainActivity.alertDelayTime){
+                    if(readMessage.equals(MainActivity.AlertACondition) && MainActivity.isAlertDialog == false && System.currentTimeMillis() - MainActivity.lastAlertTime > MainActivity.alertDelayTime){
                         MainActivity.alertStart();
                         new AlertDialog.Builder(SettingActivity.this)
                                 .setTitle(R.string.alertATitle)
@@ -248,7 +248,7 @@ public class SettingActivity extends AppCompatActivity {
                                     }
                                 })
                                 .show();
-                    }else if(readMessage.equals("b") && MainActivity.isAlertDialog == false && System.currentTimeMillis() - MainActivity.lastAlertTime > MainActivity.alertDelayTime){
+                    }else if(readMessage.equals(MainActivity.AlertBCondition) && MainActivity.isAlertDialog == false && System.currentTimeMillis() - MainActivity.lastAlertTime > MainActivity.alertDelayTime){
                         MainActivity.alertStart();
                         new AlertDialog.Builder(SettingActivity.this)
                                 .setTitle(R.string.alertBTitle)

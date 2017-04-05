@@ -20,7 +20,6 @@
     <string name="title_other_devices">Other Available Devices</string>
     <string name="button_scan">Scan for devices</string>
 
-
     <string name="alertATitle">警告A</string>
     <string name="alertAContent">a 值已經超過閥值了</string>
     <string name="alertAPositiveBtn">前往急救教學</string>
