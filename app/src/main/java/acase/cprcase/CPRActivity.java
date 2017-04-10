@@ -115,6 +115,7 @@ public class CPRActivity  extends AppCompatActivity {
                                 }
                             })
                             .show();
+					break;
                 case Constants.MESSAGE_TOAST:
                     String strToast = msg.getData().getString(Constants.TOAST);
                     Toast.makeText(CPRActivity.this,strToast, Toast.LENGTH_SHORT).show();
