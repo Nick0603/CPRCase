@@ -263,12 +263,13 @@ public class BluetoothService {
     /**
      * Indicate that the connection attempt failed and notify the UI Activity.
      */
-    private void connectionFailed() {
+    private void connectionFailed(BluetoothDevice device) {
         // Send a failure message back to the Activity
-        Message msg = mHandler.obtainMessage(Constants.MESSAGE_TOAST);
+        Message msg = mHandler.obtainMessage(Constants.MESSAGE_CONNFAIL);
         Bundle bundle = new Bundle();
-        bundle.putString(Constants.TOAST,"無法連接到此藍芽裝置");
+        bundle.putString(Constants.DEVICE_NAME, device.getName());
         msg.setData(bundle);
+
         mHandler.sendMessage(msg);
 
         mState = STATE_NONE;
@@ -434,7 +435,7 @@ public class BluetoothService {
                     Log.e(TAG, "unable to close() " + mSocketType +
                             " socket during connection failure", e2);
                 }
-                connectionFailed();
+                connectionFailed(mmDevice);
                 return;
             }
 

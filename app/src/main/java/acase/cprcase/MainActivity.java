@@ -171,7 +171,7 @@ public class MainActivity extends AppCompatActivity {
                 case Constants.MESSAGE_STATE_CHANGE:
                     switch (msg.arg1) {
                         case BluetoothService.STATE_CONNECTED:
-                            Toast.makeText(MainActivity.this, "已連接到" + MainActivity.mConnectedDeviceName, Toast.LENGTH_SHORT).show();
+                            Toast.makeText(MainActivity.this, "與" + MainActivity.mConnectedDeviceName + "裝置連線成功", Toast.LENGTH_SHORT).show();
                             break;
                         case BluetoothService.STATE_NONE:
                             MainActivity.mConnectedDeviceName = "";
@@ -261,6 +261,11 @@ public class MainActivity extends AppCompatActivity {
                                 }
                             })
                             .show();
+                    break;
+                case Constants.MESSAGE_CONNFAIL:
+                    String deviceName = msg.getData().getString(Constants.DEVICE_NAME);
+                    Toast.makeText(MainActivity.this,"與" + deviceName + "裝置連線失敗", Toast.LENGTH_SHORT).show();
+                    break;
                 case Constants.MESSAGE_TOAST:
                     String strToast = msg.getData().getString(Constants.TOAST);
                     Toast.makeText(MainActivity.this,strToast, Toast.LENGTH_SHORT).show();

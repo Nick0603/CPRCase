@@ -191,6 +191,7 @@ public class SettingActivity extends AppCompatActivity {
                         case BluetoothService.STATE_CONNECTED:
                             TV_connectStatus.setText(R.string.title_connected);
                             TV_deviceName.setText(MainActivity.mConnectedDeviceName);
+                            Toast.makeText(SettingActivity.this, "與" + MainActivity.mConnectedDeviceName + "裝置連線成功", Toast.LENGTH_SHORT).show();
                             break;
                         case BluetoothService.STATE_CONNECTING:
                             TV_connectStatus.setText(R.string.title_connecting);
@@ -303,6 +304,11 @@ public class SettingActivity extends AppCompatActivity {
                                 }
                             })
                             .show();
+                    break;
+                case Constants.MESSAGE_CONNFAIL:
+                    String deviceName = msg.getData().getString(Constants.DEVICE_NAME);
+                    Toast.makeText(SettingActivity.this,"與" + deviceName + "裝置連線失敗", Toast.LENGTH_SHORT).show();
+                    break;
                 case Constants.MESSAGE_TOAST:
                     String strToast = msg.getData().getString(Constants.TOAST);
                     Toast.makeText(SettingActivity.this,strToast, Toast.LENGTH_SHORT).show();
